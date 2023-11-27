@@ -5,9 +5,9 @@ namespace Repository
 {
     public class HomeRepository : IHomeRepository
     {
-        private readonly SmartMerchantDbContext _context;
+        private readonly CustomerDbContext _context;
 
-        public HomeRepository(SmartMerchantDbContext context)
+        public HomeRepository(CustomerDbContext context)
         {
             _context = context;
         }

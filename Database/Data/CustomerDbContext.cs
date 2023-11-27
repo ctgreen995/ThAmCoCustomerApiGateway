@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Database.Data;
 
-public partial class SmartMerchantDbContext : DbContext
+public partial class CustomerDbContext : DbContext
 {
-    public SmartMerchantDbContext()
+    public CustomerDbContext()
     {
     }
 
-    public SmartMerchantDbContext(DbContextOptions<DbContext> options)
+    public CustomerDbContext(DbContextOptions<DbContext> options)
         : base(options)
     {
     }
