@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Database.Models;
 using DTO;
 
 namespace Profiles
@@ -8,7 +7,6 @@ namespace Profiles
     {
         public MapperProfile()
         {
-            CreateMap<CostDTO, CostData>().ReverseMap();
 
         }
     }

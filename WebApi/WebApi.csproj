@@ -13,12 +13,5 @@
 	  <PackageReference Include="IdentityModel.AspNetCore" Version="4.3.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
   </ItemGroup>
-	<ItemGroup>
-	<ProjectReference Include="..\RegisteredCustomerSPA\RegisteredCustomerSpa.esproj">
-		<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-	</ProjectReference>
-			<ProjectReference Include="..\PublicCustomerSPA\PublicCustomerSpa.esproj">
-				<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			</ProjectReference>
-	</ItemGroup>
+	
 </Project>
