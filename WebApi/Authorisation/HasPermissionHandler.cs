@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace WebApp.Authorisation
+namespace WebApi.Authorisation
 {
     public class HasPermissionHandler : AuthorizationHandler<HasPermissionRequirement>
     {

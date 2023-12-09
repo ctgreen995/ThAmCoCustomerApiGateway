@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using WebApi.Profiles;
-using WebApp.Authorisation;
+using WebApi.Authorisation;
 
 namespace WebApp
 {
