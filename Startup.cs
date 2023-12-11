@@ -7,7 +7,7 @@ using System.Security.Claims;
 using WebApi.Profiles;
 using WebApi.Authorisation;
 
-namespace WebApp
+namespace WebApi
 {
     public class Startup
     {
