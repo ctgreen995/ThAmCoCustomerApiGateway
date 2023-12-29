@@ -1,9 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace WebApi.Authorisation
+namespace ThAmCoCustomerApiGateway.Authorisation
 {
     public class HasPermissionRequirement : IAuthorizationRequirement
     {
-        public string ValidPermission { get; } = "access:dashboard";
+        
+        public IEnumerable<string> ValidPermissions { get; }
+
+        public HasPermissionRequirement(IEnumerable<string> validPermissions)
+        {
+            ValidPermissions = validPermissions;
+        }
     }
 }

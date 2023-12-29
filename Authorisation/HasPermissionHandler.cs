@@ -1,17 +1,28 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace WebApi.Authorisation
+namespace ThAmCoCustomerApiGateway.Authorisation
 {
     public class HasPermissionHandler : AuthorizationHandler<HasPermissionRequirement>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasPermissionRequirement requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
+            HasPermissionRequirement requirement)
         {
-            var permission = context.User?.Claims?.FirstOrDefault(c => c.Type == "permissions" && c.Value == requirement.ValidPermission);
-
-            if (permission != null)
+            if (context.User != null && requirement.ValidPermissions.Any())
             {
-                context.Succeed(requirement);
+                var permissionsClaim = context.User.Claims
+                    .FirstOrDefault(c => c.Type == "permissions");
+
+                if (permissionsClaim != null)
+                {
+                    var permissions = permissionsClaim.Value.Split(' ');
+                    if (requirement.ValidPermissions.Any(requiredPermission =>
+                            permissions.Contains(requiredPermission)))
+                    {
+                        context.Succeed(requirement);
+                    }
+                }
             }
+
             return Task.CompletedTask;
         }
     }
