@@ -82,7 +82,7 @@ public class CustomerManagementController : ControllerBase
             var deleteCustomer = await _customerManagementService.RequestDeleteCustomerAsync(customerId);
             if (deleteCustomer.IsSuccessStatusCode)
             {
-                return Ok(await deleteCustomer.Content.ReadFromJsonAsync<CustomerDto>());
+                return Ok();
             }
 
             return BadRequest();

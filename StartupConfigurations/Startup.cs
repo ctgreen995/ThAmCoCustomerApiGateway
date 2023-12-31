@@ -17,7 +17,7 @@
         {
             services.AddSingleton(Configuration);
             services.AddAuthenticationServices(Configuration);
-            services.AddAuthenticationServices(Configuration);
+            services.AddAuthorisationServices();
             services.AddServicedependencies();
             services.AddHttpServices(Configuration, _env, _logger);
         }

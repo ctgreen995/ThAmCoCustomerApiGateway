@@ -52,6 +52,7 @@ public class FakeOrdersService : IOrdersService
                         Funds = 150.00
                     }
                 },
+                OrderTotal = 4200,
                 OrderDate = "2021-01-01",
                 Status = "Processing"
             },
@@ -96,6 +97,7 @@ public class FakeOrdersService : IOrdersService
                         Funds = 150.00
                     }
                 },
+                OrderTotal = 4200,
                 OrderDate = "2023-03-03",
                 Status = "Complete"
             }
