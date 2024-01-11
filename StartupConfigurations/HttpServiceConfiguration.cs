@@ -41,10 +41,8 @@ public static class HttpServiceConfiguration
                 client.BaseAddress = new Uri(configuration["CustomerOrdersServiceBaseUrl"]);
             });
 
-            services.AddHttpClient<IProductsService, ProductsService>(client =>
-            {
-                client.BaseAddress = new Uri(configuration["CatalogueServiceBaseUrl"]);
-            });
+            services.AddSingleton<IProductsService, FakeProductsService>();
+            services.AddSingleton<IOrdersService, FakeOrdersService>();
         }
     }
 
