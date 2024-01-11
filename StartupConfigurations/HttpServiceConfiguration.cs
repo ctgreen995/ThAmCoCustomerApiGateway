@@ -36,11 +36,7 @@ public static class HttpServiceConfiguration
                     configuration["Auth0CmsClientId"], configuration["Auth0CmsClientSecret"],
                     configuration["Auth0CmsAudience"]));
 
-            services.AddHttpClient<IOrdersService, OrdersService>(client =>
-            {
-                client.BaseAddress = new Uri(configuration["CustomerOrdersServiceBaseUrl"]);
-            });
-
+       
             services.AddSingleton<IProductsService, FakeProductsService>();
             services.AddSingleton<IOrdersService, FakeOrdersService>();
         }
