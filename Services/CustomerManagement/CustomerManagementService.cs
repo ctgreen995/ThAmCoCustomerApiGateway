@@ -1,3 +1,5 @@
+using System.Net;
+using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 using ThAmCoCustomerApiGateway.Dtos;
 
@@ -23,6 +25,19 @@ namespace ThAmCoCustomerApiGateway.Services.CustomerManagement
             {
 
                 var cacheKey = $"CustomerDetails_{customerId}";
+
+                // Check if the data is in the cache
+                if (_cache.TryGetValue(cacheKey, out CustomerDto cachedCustomer))
+                {
+                    _logger.LogInformation("Retrieved customer details for customer {CustomerId} from cache", customerId);
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.OK,
+                        Content = new StringContent(JsonSerializer.Serialize(cachedCustomer)),
+                    };
+                }
+
+                // Not in cache so fetch from the service
                 var response = await _httpClient.GetAsync($"customer/getCustomerDetailsById/{customerId}");
 
                 if (!response.IsSuccessStatusCode)
@@ -33,8 +48,9 @@ namespace ThAmCoCustomerApiGateway.Services.CustomerManagement
                 var customerDto = await response.Content.ReadFromJsonAsync<CustomerDto>();
                 if (customerDto != null)
                 {
+                    // Add to cache
                     _cache.Set(cacheKey, customerDto, TimeSpan.FromMinutes(30));
-                    
+
                     // These logs are for demonstrating caching is functioning
                     _logger.LogInformation("Cached customer details for customer {CustomerId}", customerId);
                 }
@@ -77,7 +93,13 @@ namespace ThAmCoCustomerApiGateway.Services.CustomerManagement
                 var updatedCustomerDto = await response.Content.ReadFromJsonAsync<CustomerDto>();
                 if (updatedCustomerDto != null)
                 {
-                    _cache.Set($"CustomerDetails_{customerDto.AuthId}", updatedCustomerDto, TimeSpan.FromMinutes(30));
+                    // Define the caching entry options
+                    var cacheEntryOptions = new MemoryCacheEntryOptions()
+                        .SetSize(1)
+                        .SetSlidingExpiration(TimeSpan.FromMinutes(30));
+
+                    // Update the cache
+                    _cache.Set($"CustomerDetails_{customerDto.AuthId}", updatedCustomerDto, cacheEntryOptions);
                     _logger.LogInformation("Updated customer {CustomerId} in cache", customerDto.AuthId);
                 }
 

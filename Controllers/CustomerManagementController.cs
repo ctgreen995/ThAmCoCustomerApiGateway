@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +27,20 @@ public class CustomerManagementController : ControllerBase
             var customerDetails = await _customerManagementService.GetCustomerDetailsAsync(customerId);
             if (customerDetails.IsSuccessStatusCode)
             {
-                return Ok(await customerDetails.Content.ReadFromJsonAsync<CustomerDto>());
+                if (customerDetails.Content != null)
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+                    var contentString = await customerDetails.Content.ReadAsStringAsync();
+                    var content = JsonSerializer.Deserialize<CustomerDto>(contentString, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    return Ok(content);
+                }
+                return NotFound();
             }
 
             return NotFound();
@@ -44,7 +59,16 @@ public class CustomerManagementController : ControllerBase
             var createCustomer = await _customerManagementService.CreateCustomerAsync(customer);
             if (createCustomer.IsSuccessStatusCode)
             {
-                return Ok(await createCustomer.Content.ReadFromJsonAsync<CustomerDto>());
+                if (createCustomer.Content != null)
+                {
+                    var contentString = await createCustomer.Content.ReadAsStringAsync();
+                    var content = JsonSerializer.Deserialize<CustomerDto>(contentString, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    return Ok(content);
+                }
+                return NotFound();
             }
 
             return BadRequest();
@@ -63,7 +87,16 @@ public class CustomerManagementController : ControllerBase
             var updateCustomer = await _customerManagementService.UpdateCustomerAsync(customer);
             if (updateCustomer.IsSuccessStatusCode)
             {
-                return Ok(await updateCustomer.Content.ReadFromJsonAsync<CustomerDto>());
+                if (updateCustomer.Content != null)
+                {
+                    var contentString = await updateCustomer.Content.ReadAsStringAsync();
+                    var content = JsonSerializer.Deserialize<CustomerDto>(contentString, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+                    return Ok(content);
+                }
+                return NotFound();
             }
 
             return BadRequest();
