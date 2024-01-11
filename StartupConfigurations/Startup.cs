@@ -15,6 +15,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCorsServices();
             services.AddSingleton(Configuration);
             services.AddAuthenticationServices(Configuration);
             services.AddAuthorisationServices();
@@ -26,9 +27,11 @@
         {
             if (env.IsDevelopment())
             {
+                app.UseCors("DevPolicy");
             }
             else
             {
+                app.UseCors("ProdPolicy");
                 app.UseHsts();
             }
 
