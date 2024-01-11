@@ -1,7 +1,5 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ThAmCoCustomerApiGateway.Dtos;
 using ThAmCoCustomerApiGateway.Services.CustomerManagement;
@@ -52,7 +50,7 @@ public class CustomerManagementController : ControllerBase
     }
 
     [HttpPost("createCustomer")]
-    public async Task<ActionResult<CustomerDto>> CreateCustomerAsync(CustomerDto customer)
+    public async Task<ActionResult<CustomerDto>> CreateCustomerAsync([FromBody] CustomerDto customer)
     {
         try
         {
@@ -79,8 +77,8 @@ public class CustomerManagementController : ControllerBase
         }
     }
 
-    [HttpPatch("updateCustomer/{customerId}")]
-    public async Task<ActionResult<CustomerDto>> UpdateCustomerAsync(string customerId, CustomerDto customer)
+    [HttpPatch("updateCustomerById/{customerId}")]
+    public async Task<ActionResult<CustomerDto>> UpdateCustomerAsync([FromBody] CustomerDto customer)
     {
         try
         {
@@ -89,12 +87,7 @@ public class CustomerManagementController : ControllerBase
             {
                 if (updateCustomer.Content != null)
                 {
-                    var contentString = await updateCustomer.Content.ReadAsStringAsync();
-                    var content = JsonSerializer.Deserialize<CustomerDto>(contentString, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-                    return Ok(content);
+                    return Ok();
                 }
                 return NotFound();
             }
