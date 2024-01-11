@@ -15,11 +15,30 @@ public static class HttpServiceConfiguration
     public static void AddHttpServices(this IServiceCollection services, IConfiguration configuration,
         IWebHostEnvironment env, ILogger<Startup> logger)
     {
-        if (env.IsDevelopment())
+        if (env.EnvironmentName == "Testing")
         {
             services.AddSingleton<ICustomerManagementService, FakeCustomerManagementService>();
             services.AddSingleton<IOrdersService, FakeOrdersService>();
             services.AddSingleton<IProductsService, FakeProductsService>();
+        }
+        else if (env.IsDevelopment())
+        {
+            services.AddMemoryCache();
+            AddPollyPolicies(services, logger);
+            services.AddHttpClient<ICustomerManagementService, CustomerManagementService>(client =>
+                {
+                    client.BaseAddress = new Uri(configuration["CustomerManagementServiceBaseUrl"]);
+                })
+                .AddPolicyHandlerFromRegistry("retryPolicy")
+                .AddPolicyHandlerFromRegistry("circuitBreakerPolicy")
+                .AddHttpMessageHandler(handler => new Auth0TokenHandler(
+                    handler.GetRequiredService<IAuth0TokenService>(),
+                    configuration["Auth0CmsClientId"], configuration["Auth0CmsClientSecret"],
+                    configuration["Auth0CmsAudience"]));
+
+
+            services.AddSingleton<IProductsService, FakeProductsService>();
+            services.AddSingleton<IOrdersService, FakeOrdersService>();
         }
         else
         {
@@ -36,7 +55,31 @@ public static class HttpServiceConfiguration
                     configuration["Auth0CmsClientId"], configuration["Auth0CmsClientSecret"],
                     configuration["Auth0CmsAudience"]));
 
-       
+            /*
+             * The real catalogue and order services are not available in production environment for this project,
+             * so we will use the fake services instead for demonstration purposes
+             */
+            //     services.AddHttpClient<IProductsService, ProductsService>(client =>
+            //         {
+            //             client.BaseAddress = new Uri(configuration["ProductsServiceBaseUrl"]);
+            //         })
+            //         .AddPolicyHandlerFromRegistry("retryPolicy")
+            //         .AddPolicyHandlerFromRegistry("circuitBreakerPolicy")
+            //         .AddHttpMessageHandler(handler => new Auth0TokenHandler(
+            //             handler.GetRequiredService<IAuth0TokenService>(),
+            //             configuration["Auth0CagClientId"], configuration["Auth0CagClientSecret"],
+            //             configuration["Auth0CagAudience"]));
+
+            //     services.AddHttpClient<IOrdersService, OrdersService>(client =>
+            //         {
+            //             client.BaseAddress = new Uri(configuration["OrdersServiceBaseUrl"]);
+            //         })
+            //         .AddPolicyHandlerFromRegistry("retryPolicy")
+            //         .AddPolicyHandlerFromRegistry("circuitBreakerPolicy")
+            //         .AddHttpMessageHandler(handler => new Auth0TokenHandler(
+            //             handler.GetRequiredService<IAuth0TokenService>(),
+            //             configuration["Auth0CagClientId"], configuration["Auth0CagClientSecret"],
+            //             configuration["Auth0CagAudience"]));
             services.AddSingleton<IProductsService, FakeProductsService>();
             services.AddSingleton<IOrdersService, FakeOrdersService>();
         }
