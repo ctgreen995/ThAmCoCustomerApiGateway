@@ -100,7 +100,7 @@ public class CustomerManagementController : ControllerBase
         }
     }
 
-    [HttpPost("requestDeleteCustomer/{customerId}")]
+    [HttpDelete("requestDeleteCustomerById/{customerId}")]
     public async Task<ActionResult<CustomerDto>> RequestDeleteCustomerAsync(string customerId)
     {
         try
