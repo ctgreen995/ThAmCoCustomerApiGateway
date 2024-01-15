@@ -1,0 +1,81 @@
+name: Dev and Test Deployment
+
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - "v*"
+
+env:
+  AZURE_WEBAPP_PACKAGE_PATH: "."
+  DOTNET_VERSION: "7.0.x"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Set up dependency caching for faster builds
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Test with dotnet
+        run: dotnet test --configuration Release --no-build
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: dotnet publish (Dev & Testing)
+        run: dotnet publish ThAmCoCustomerApiGateway.csproj -c Release -o ./publish
+      - name: Upload artifact for deployment job (Dev & Testing)
+        uses: actions/upload-artifact@v3
+        with:
+          name: ThAmCoCustomerApiGateway-App
+          path: ./publish
+
+  deploy_dev_and_test:
+    needs: publish
+    runs-on: ubuntu-latest
+    environment:
+      name: "Dev & Testing"
+    steps:
+      - name: Download artifact for deployment job (Dev & Testing)
+        uses: actions/download-artifact@v3
+        with:
+          name: ThAmCoCustomerApiGateway-App
+
+      - name: Deploy to Azure Web App (Dev & Testing)
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
