@@ -89,7 +89,7 @@ public static class HttpServiceConfiguration
     {
         var retryPolicy = HttpPolicyExtensions
             .HandleTransientHttpError()
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+            .WaitAndRetryAsync(50, retryAttempt => TimeSpan.FromSeconds(1),
                 onRetry: (outcome, timespan, retryAttempt, context) =>
                 {
                     logger.LogWarning($"Retrying {retryAttempt} time(s) due to {outcome.Exception?.Message}");
@@ -97,9 +97,9 @@ public static class HttpServiceConfiguration
 
         var circuitBreakerPolicy = HttpPolicyExtensions
             .HandleTransientHttpError()
-            .CircuitBreakerAsync(5, TimeSpan.FromMinutes(1),
+            .CircuitBreakerAsync(2, TimeSpan.FromSeconds(15),
                 onBreak: (outcome, timespan) =>
-                    logger.LogWarning($"Circuit breaker open for {timespan.TotalMinutes} minutes"),
+                    logger.LogWarning($"Circuit breaker open for {timespan.TotalSeconds} seconds"),
                 onReset: () => logger.LogInformation("Circuit breaker has reset"),
                 onHalfOpen: () => logger.LogInformation("Circuit breaker is half-open"));
 

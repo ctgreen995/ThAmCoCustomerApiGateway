@@ -18,6 +18,7 @@ public class CustomerManagementController : ControllerBase
     }
 
     [HttpGet("getCustomerDetailsById/{customerId}")]
+    [Authorize(Policy = "ReadAccount")]
     public async Task<ActionResult<CustomerDto>> GetCustomerDetailsAsync(string customerId)
     {
         try
@@ -49,6 +50,7 @@ public class CustomerManagementController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "CreateAccount")]
     [HttpPost("createCustomer")]
     public async Task<ActionResult<CustomerDto>> CreateCustomerAsync([FromBody] CustomerDto customer)
     {
@@ -77,6 +79,7 @@ public class CustomerManagementController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "UpdateAccount")]
     [HttpPatch("updateCustomerById/{customerId}")]
     public async Task<ActionResult<CustomerDto>> UpdateCustomerAsync([FromBody] CustomerDto customer)
     {
@@ -100,6 +103,7 @@ public class CustomerManagementController : ControllerBase
         }
     }
 
+    [Authorize(Policy = "RequestDeleteAccount")]
     [HttpDelete("requestDeleteCustomerById/{customerId}")]
     public async Task<ActionResult<CustomerDto>> RequestDeleteCustomerAsync(string customerId)
     {

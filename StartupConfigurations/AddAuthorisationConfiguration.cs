@@ -8,14 +8,11 @@ public static class AddAuthorisationConfiguration
     {
         services.AddAuthorization(options =>
         {
-            services.AddAuthorization(options =>
+            foreach (var policy in AuthorisationPolicies.Default.Policies)
             {
-                foreach (var policy in AuthorisationPolicies.Default.Policies)
-                {
-                    options.AddPolicy(policy.PolicyName, policyBuilder =>
-                        policyBuilder.Requirements.Add(new HasPermissionRequirement(policy.Permissions)));
-                }
-            });
+                options.AddPolicy(policy.PolicyName, policyBuilder =>
+                    policyBuilder.Requirements.Add(new HasPermissionRequirement(policy.Permissions)));
+            }
         });
     }
 }
