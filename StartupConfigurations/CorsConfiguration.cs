@@ -8,7 +8,7 @@ namespace ThAmCoCustomerApiGateway.StartupConfigurations
             services.AddCors(options =>
             {
                 options.AddPolicy("DevPolicy", builder =>
-                    builder.WithOrigins("https://localhost:5173")
+                    builder.WithOrigins("https://localhost:5173", "https://thamcoapigatewaydev.azurewebsites.net")
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
