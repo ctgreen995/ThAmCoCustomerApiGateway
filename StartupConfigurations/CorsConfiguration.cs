@@ -12,8 +12,7 @@ namespace ThAmCoCustomerApiGateway.StartupConfigurations
                 var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
                 builder.WithOrigins(allowedOrigins)
                        .AllowAnyMethod()
-                       .AllowAnyHeader()
-                       .AllowCredentials();
+                       .AllowAnyHeader();
             });
         });
         }
