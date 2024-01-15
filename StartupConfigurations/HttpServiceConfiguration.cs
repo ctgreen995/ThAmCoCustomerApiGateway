@@ -85,7 +85,7 @@ public static class HttpServiceConfiguration
         }
     }
 
-    public static void AddPollyPolicies(IServiceCollection services, ILogger<Startup> logger)
+    private static void AddPollyPolicies(IServiceCollection services, ILogger<Startup> logger)
     {
         var retryPolicy = HttpPolicyExtensions
             .HandleTransientHttpError()
