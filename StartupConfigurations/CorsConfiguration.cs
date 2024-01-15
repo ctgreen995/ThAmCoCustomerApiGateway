@@ -3,23 +3,19 @@ namespace ThAmCoCustomerApiGateway.StartupConfigurations
 {
     public static class CorsConfiguration
     {
-        public static void AddCorsServices(this IServiceCollection services)
+        public static void AddCorsServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddCors(options =>
+        {
+            options.AddPolicy("CorsPolicy", builder =>
             {
-                options.AddPolicy("DevPolicy", builder =>
-                    builder.WithOrigins("https://localhost:5173")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
+                var allowedOrigins = configuration.GetSection("AllowedOrigins").Get<string[]>();
+                builder.WithOrigins(allowedOrigins)
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
             });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("ProdPolicy", builder =>
-                    builder.WithOrigins("https://ashy-island-06c50db03.4.azurestaticapps.net", "https://thamcoapigatewaydev.azurewebsites.net")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-            });
+        });
         }
     }
 }
