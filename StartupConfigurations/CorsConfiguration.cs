@@ -8,7 +8,7 @@ namespace ThAmCoCustomerApiGateway.StartupConfigurations
             services.AddCors(options =>
             {
                 options.AddPolicy("DevPolicy", builder =>
-                    builder.WithOrigins("https://localhost:5173", "https://thamcoapigatewaydev.azurewebsites.net")
+                    builder.WithOrigins("https://localhost:5173")
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
@@ -16,7 +16,7 @@ namespace ThAmCoCustomerApiGateway.StartupConfigurations
             services.AddCors(options =>
             {
                 options.AddPolicy("ProdPolicy", builder =>
-                    builder.WithOrigins("https://ashy-island-06c50db03.4.azurestaticapps.net")
+                    builder.WithOrigins("https://ashy-island-06c50db03.4.azurestaticapps.net", "https://thamcoapigatewaydev.azurewebsites.net")
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
